@@ -1,6 +1,7 @@
 import logging
 import requests
 from requests import Session
+import json
 from bs4 import BeautifulSoup
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -8,6 +9,9 @@ from selenium.webdriver.common.by import By
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from abc import ABCMeta, abstractmethod
+
+class CatsRequestSessionError(RuntimeError):
+    pass
 
 class CatsRequestSession:
     def __init__(self):
@@ -25,32 +29,52 @@ class CatsRequestSession:
 
     def get_cookies(self):
         return self.session.cookies.get_dict()
-
+    
+    def _mk_result(self, ret, response_content_type):
+        if response_content_type == "html":
+            soup = BeautifulSoup(ret.content, features="html.parser")
+            return (ret.headers, soup)
+        elif response_content_type == "json":
+            soup = BeautifulSoup(ret.content, features="html.parser")
+            return (ret.headers, json.loads(str(soup)))
+        else:
+            return (ret.headers, ret.content)
+        
+    def _check_status_code(self, url, status_code):
+        if status_code != 200:
+            raise CatsRequestSessionError(f"{url} response code is {status_code}")
+        return True
+        
     def get(self, url, response_content_type=None, proxy=None):
+        """[summary]
+        
+        Arguments:
+            url {[type]} -- [description]
+        
+        Keyword Arguments:
+            response_content_type {[type]} -- [html or json] (default: {None})
+            proxy {[type]} -- [description] (default: {None})
+        
+        Raises:
+            RuntimeError: [description]
+        
+        Returns:
+            [type] -- [description]
+        """
         if proxy:
             ret = self.session.get(url, proxies= self.burpProxies, verify=False)
         else:
             ret = self.session.get(url)
-        if ret.status_code != 200:
-            raise RuntimeError(f"{url} response code is {ret.status_code}")
-        if response_content_type == "html":
-            soup = BeautifulSoup(ret.content, features="html.parser")
-            return (ret.headers, soup)
-        else:
-            return (ret.headers, ret.content)
+        self._check_status_code(url, ret.status_code)
+        return self._mk_result(ret, response_content_type)
 
     def post(self, url, post_data, response_content_type, proxy=None):
         if proxy:
             ret = self.session.post(url, post_data, proxies=self.burpProxies, verify=False)
         else:
             ret = self.session.post(url, post_data)
-        if ret.status_code != 200:
-            raise RuntimeError(f"{url} response code is {ret.status_code}")
-        if response_content_type == "html":
-            soup = BeautifulSoup(ret.content, features="html.parser")
-            return (ret.headers, soup)
-        else:
-            return (ret.headers, ret.content)
+        self._check_status_code(url, ret.status_code)
+        return self._mk_result(ret, response_content_type)
 
 """[summary]
 """
