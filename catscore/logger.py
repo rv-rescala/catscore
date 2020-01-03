@@ -10,9 +10,6 @@ from email.utils import formatdate
 import socket
 
 class Gmail:
-    """
-
-    """
     smtp_url = 'smtp.gmail.com'
     smtp_port = 587
 
@@ -31,16 +28,15 @@ class Gmail:
         self.smtp.ehlo()
         self.smtp.starttls()
         self.smtp.ehlo()
-        self.smtp.login(conf.username, conf.password)
-        self.conf = conf
+        self.smtp.login(username, password)
 
     def send(self, body, subject):
         msg = MIMEText(body)
         msg['Subject'] = subject
-        msg['From'] = self.conf.username
+        msg['From'] = self.username
         msg['To'] = self.conf.to_address
         msg['Date'] = formatdate()
-        self.smtp.sendmail(self.conf.username, self.conf.to_address, msg.as_string())
+        self.smtp.sendmail(self.username, self.to_address, msg.as_string())
 
     def close(self):
         self.smtp.close()
@@ -81,11 +77,11 @@ class CatsLogging:
                             datefmt=cls.datefmt)
         logging.getLogger('sqlalchemy.engine').setLevel(level)
         if gmail:
-            handler = logging.handlers.SMTPHandler(mailhost=(Gmail.smtp_url, Gmail.smtp_port),
-                                                   fromaddr=Gmail.username,
-                                                   toaddrs=Gmail.to_address,
+            handler = logging.handlers.SMTPHandler(mailhost=(gmail.smtp_url, gmail.smtp_port),
+                                                   fromaddr=gmail.username,
+                                                   toaddrs=gmail.to_address,
                                                    subject=app_name,
-                                                   credentials=(Gmail.username, Gmail.password),
+                                                   credentials=(gmail.username, gmail.password),
                                                    secure=())
             handler.setLevel(logging.ERROR)
             logger = logging.getLogger('root')
