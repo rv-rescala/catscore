@@ -24,11 +24,15 @@ class Gmail:
         self.username = username
         self.password = password
         self.to_address = to_address
+
+    def login(self):
+        """[summary]
+        """
         self.smtp = smtplib.SMTP(self.smtp_url, self.smtp_port)
         self.smtp.ehlo()
         self.smtp.starttls()
         self.smtp.ehlo()
-        self.smtp.login(username, password)
+        self.smtp.login(self.username, self.password)
 
     def send(self, body, subject):
         msg = MIMEText(body)
@@ -77,15 +81,19 @@ class CatsLogging:
                             datefmt=cls.datefmt)
         logging.getLogger('sqlalchemy.engine').setLevel(level)
         if gmail:
-            handler = logging.handlers.SMTPHandler(mailhost=(gmail.smtp_url, gmail.smtp_port),
-                                                   fromaddr=gmail.username,
-                                                   toaddrs=gmail.to_address,
-                                                   subject=app_name,
-                                                   credentials=(gmail.username, gmail.password),
-                                                   secure=())
-            handler.setLevel(logging.ERROR)
-            logger = logging.getLogger('root')
-            logger.addHandler(handler)
+                try:
+                    gmail.login()
+                    handler = logging.handlers.SMTPHandler(mailhost=(gmail.smtp_url, gmail.smtp_port),
+                                                        fromaddr=gmail.username,
+                                                        toaddrs=gmail.to_address,
+                                                        subject=app_name,
+                                                        credentials=(gmail.username, gmail.password),
+                                                        secure=())
+                    handler.setLevel(logging.ERROR)
+                    logger = logging.getLogger('root')
+                    logger.addHandler(handler)
+                except smtplib.SMTPAuthenticationError:
+                    cls.error("Cannot login to google")
 
     @classmethod
     def __add_message_option(cls, mesasge):

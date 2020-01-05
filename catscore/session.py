@@ -106,7 +106,8 @@ class CatsWebDriverSession:
         self.driver = webdriver.Chrome(options=options, executable_path=executable_path)
 
     def close(self):
-        """[close WebDriverSession]
+        """[Close WebDriverSession, if chromewebdriver dosen't kill, plsease execute "killall chromedriver"]
+        
         """
         self.driver.quit()
 
