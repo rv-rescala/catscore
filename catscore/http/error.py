@@ -1,0 +1,2 @@
+class CatsRequestSessionError(RuntimeError):
+    pass

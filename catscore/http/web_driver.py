@@ -9,79 +9,13 @@ from selenium.webdriver.common.by import By
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from abc import ABCMeta, abstractmethod
+from catscore.http.request import CatsRequest
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
-class CatsRequestSessionError(RuntimeError):
-    pass
-
-class CatsRequestSession:
-    def __init__(self):
-        """[summary]
-        """
-        self.session = requests.Session()
-
-    def close(self):
-        """[summary]
-        """
-        self.session.close()
-
-    def get_cookie(self, key):
-        return self.session.cookies.get(key)
-
-    def get_cookies(self):
-        return self.session.cookies.get_dict()
-    
-    def _mk_result(self, ret, response_content_type):
-        if response_content_type == "html":
-            soup = BeautifulSoup(ret.content, features="html.parser")
-            return (ret.headers, soup)
-        elif response_content_type == "json":
-            soup = BeautifulSoup(ret.content, features="html.parser")
-            return (ret.headers, json.loads(str(soup)))
-        else:
-            return (ret.headers, ret.content)
-        
-    def _check_status_code(self, url, status_code):
-        if status_code != 200:
-            raise CatsRequestSessionError(f"{url} response code is {status_code}")
-        return True
-        
-    def get(self, url, response_content_type=None, proxy=None):
-        """[summary]
-        
-        Arguments:
-            url {[type]} -- [description]
-        
-        Keyword Arguments:
-            response_content_type {[type]} -- [html or json] (default: {None})
-            proxy {[type]} -- [description] (default: {None})
-        
-        Raises:
-            RuntimeError: [description]
-        
-        Returns:
-            [type] -- [description]
-        """
-        if proxy:
-            ret = self.session.get(url, proxies= self.burpProxies, verify=False)
-        else:
-            ret = self.session.get(url)
-        self._check_status_code(url, ret.status_code)
-        return self._mk_result(ret, response_content_type)
-
-    def post(self, url, post_data, response_content_type, proxy=None):
-        if proxy:
-            ret = self.session.post(url, post_data, proxies=self.burpProxies, verify=False)
-        else:
-            ret = self.session.post(url, post_data)
-        self._check_status_code(url, ret.status_code)
-        return self._mk_result(ret, response_content_type)
-
-"""[summary]
-"""
-class CatsWebDriverSession:
+class CatsWebDriver:
     def __init__(self, binary_location, executable_path, proxy, headless):
         """[summary]
-        
+
         Arguments:
             binary_location {[type]} -- [description]
             executable_path {[type]} -- [description]
@@ -103,7 +37,11 @@ class CatsWebDriverSession:
         if proxy:
             logging.info("WebDriverSession proxy on")
             options.add_argument(f"proxy-server={proxy}")
-        self.driver = webdriver.Chrome(options=options, executable_path=executable_path)
+            
+        caps = DesiredCapabilities.CHROME
+        caps['loggingPrefs'] = {'performance': 'INFO'}
+        self.driver = webdriver.Chrome(options=options, executable_path=executable_path,desired_capabilities=caps)
+        self.driver.implicitly_wait(5)
 
     def close(self):
         """[Close WebDriverSession, if chromewebdriver dosen't kill, plsease execute "killall chromedriver"]
@@ -114,13 +52,13 @@ class CatsWebDriverSession:
     def get_cookies(self):
             return self.driver.get_cookies()
 
-    def to_request_session(self) -> CatsRequestSession: 
+    def to_request_session(self) -> CatsRequest: 
         """[summary]
         
         Returns:
-            CatsRequestSession -- [description]
+            CatsRequest -- [description]
         """
-        session = CatsRequestSession()
+        session = CatsRequest()
         for cookie in self.driver.get_cookies():
             self.driver.cookies.set(cookie["name"], cookie["value"])
         return session
@@ -147,9 +85,18 @@ class CatsWebDriverSession:
         """
         WebDriverWait(self.driver, 20).until(EC.presence_of_element_located((By.CLASS_NAME, _class)))
 
+    def move(self, url):
+        self.driver.get(url)
+
     def html(self):
         html = self.driver.page_source.encode('utf-8')
         return BeautifulSoup(html, "lxml")
 
     def reload(self):
         self.driver.refresh()
+        
+    def log(self):
+        result = []
+        for entry in self.driver.get_log('performance'):
+            result.append(entry['message'])
+        return result

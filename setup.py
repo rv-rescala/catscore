@@ -16,18 +16,18 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     
 setup(
     name='catscore',
-    version='0.1.2',
+    version='0.1.3',
     description='Core library for cats project',
     long_description=long_description,
     long_description_content_type='text/markdown',
     author='rv',
     author_email='yo-maruya@rescala.jp',
     keywords='sample setuptools development',
-    install_requires=['requests','bs4', 'selenium' , 'lxml'],
+    install_requires=['requests','bs4', 'selenium' , 'lxml', 'dataclass'],
     url='https://rescala.jp',
     license='MIT',
     packages=find_packages(exclude=('tests')),
-    python_requires='>=3.5',
+    python_requires='>=3.7',
     project_urls={  # Optional
         'Bug Reports': 'https://github.com/rv-rescala/catscore/issues',
         'Source': 'https://github.com/rv-rescala/catscore'
