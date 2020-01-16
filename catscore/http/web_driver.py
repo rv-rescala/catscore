@@ -49,7 +49,11 @@ class CatsWebDriver:
         """
         self.driver.quit()
 
-    def get_cookies(self):
+    def reload(self):
+        self.driver.refresh()
+
+    @property
+    def cookies(self):
             return self.driver.get_cookies()
 
     def to_request_session(self) -> CatsRequest: 
@@ -88,13 +92,12 @@ class CatsWebDriver:
     def move(self, url):
         self.driver.get(url)
 
+    @property
     def html(self):
         html = self.driver.page_source.encode('utf-8')
         return BeautifulSoup(html, "lxml")
 
-    def reload(self):
-        self.driver.refresh()
-        
+    @property
     def log(self):
         result = []
         for entry in self.driver.get_log('performance'):

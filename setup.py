@@ -16,7 +16,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     
 setup(
     name='catscore',
-    version='0.1.4',
+    version='0.1.5',
     description='Core library for cats project',
     long_description=long_description,
     long_description_content_type='text/markdown',
