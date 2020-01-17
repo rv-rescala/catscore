@@ -7,3 +7,7 @@ class MysqlConf:
     usr: str
     pwd: str
     db_name: str
+
+    @property
+    def sql_connection(self):
+        return f"jdbc:mysql://{self.host}:{self.port}/{self.db_name}?user={self.usr}&password={self.pwd}"
