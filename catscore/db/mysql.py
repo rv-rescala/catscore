@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 @dataclass(frozen=True)
-class MysqlConf:
+class MySQLConf:
     host: str
     port: str
     usr: str
@@ -9,5 +9,5 @@ class MysqlConf:
     db_name: str
 
     @property
-    def sql_connection(self):
+    def connection_uri(self):
         return f"jdbc:mysql://{self.host}:{self.port}/{self.db_name}?user={self.usr}&password={self.pwd}"
