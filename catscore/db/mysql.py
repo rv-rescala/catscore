@@ -11,9 +11,11 @@ class MySQLConf:
 
     def connection_uri(self, inteface:str):
         if inteface == "jdbc":
-            return f"jdbc:mysql://{self.host}:{self.port}/{self.db_name}?user={self.user}&password={self.pwd}"
+            uri = f"jdbc:mysql://{self.host}:{self.port}/{self.db_name}?user={self.user}&password={self.pwd}"
         elif inteface == "pymysql":
-            return 'mysql+pymysql://%s:%s@%s/%s?charset=utf8' % (self.user, self.pwd, self.host + ":" + self.port, self.db_name)
+            uri =  'mysql+pymysql://%s:%s@%s/%s?charset=utf8' % (self.user, self.pwd, self.host + ":" + self.port, self.db_name)
+        print(uri)
+        return uri
 
     @classmethod
     def from_json(cls, path):
