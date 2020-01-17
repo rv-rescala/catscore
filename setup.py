@@ -23,7 +23,7 @@ setup(
     author='rv',
     author_email='yo-maruya@rescala.jp',
     keywords='sample setuptools development',
-    install_requires=['requests','bs4', 'selenium' , 'lxml'],
+    install_requires=['requests','bs4', 'selenium' , 'lxml', 'mecab-python3'],
     url='https://rescala.jp',
     license='MIT',
     packages=find_packages(exclude=('tests')),
