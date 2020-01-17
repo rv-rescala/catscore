@@ -53,4 +53,3 @@ class CatsMeCab:
             sentences {List[str]} -- [description]
         """
         pass
-

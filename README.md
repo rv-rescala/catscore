@@ -23,3 +23,14 @@ Please make sure to update tests as appropriate.
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
+
+## Mecab install
+If you are failing to install mecab-python3, please check it
+
+en:  https://github.com/shogun-toolbox/shogun/issues/2930
+jp: https://qiita.com/siraasagi/items/e07e0b271cb7cd679a70
+
+### Swig problem at mecab-python
+
+You need to update swig > 0.3.8
+Please execute yum install swig3

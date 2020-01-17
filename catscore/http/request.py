@@ -11,6 +11,7 @@ from selenium.webdriver.chrome.options import Options
 from abc import ABCMeta, abstractmethod
 from catscore.http.error import CatsRequestSessionError
 from catscore.http.response import Response, ResponseHtml, ResponseJson
+import time
 
 class CatsRequest:
     def __init__(self):
@@ -43,6 +44,17 @@ class CatsRequest:
         if status_code != 200:
             raise CatsRequestSessionError(f"{url} response code is {status_code}")
         return True
+
+    def retry_get(self, url, response_content_type=None, proxy=None, retry_num=4, wait=1):
+        reponse = None
+        for i in range(retry_num):
+            try:
+                reponse = self.get(url, response_content_type, proxy)
+                return reponse
+            except Exception:
+                print(f"retry_get: {url} retry {i}")
+                time.sleep(wait)
+        raise CatsRequestSessionError(f"{url} retry count is {retry_num}")
 
     def get(self, url, response_content_type=None, proxy=None):
         """[summary]
