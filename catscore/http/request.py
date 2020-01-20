@@ -12,6 +12,9 @@ from abc import ABCMeta, abstractmethod
 from catscore.http.error import CatsRequestSessionError
 from catscore.http.response import Response, ResponseHtml, ResponseJson
 import time
+from asgiref.sync import sync_to_async
+import asyncio
+import aiohttp
 
 class CatsRequest:
     def __init__(self):
@@ -36,6 +39,7 @@ class CatsRequest:
             trace {[type]} -- [description]
         """
         self.close()
+        
 
     def close(self):
         """[summary]
@@ -104,3 +108,8 @@ class CatsRequest:
             ret = self.session.post(url, post_data)
         self._check_status_code(url, ret.status_code)
         return self._mk_result(ret, response_content_type)
+    
+    async def async_get(self, url, response_content_type=None):
+        """[TBD]
+        """
+        pass
