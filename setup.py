@@ -16,13 +16,13 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     
 setup(
     name='catscore',
-    version='0.2.2',
+    version='0.2.3',
     description='Core library for cats project',
     long_description=long_description,
     long_description_content_type='text/markdown',
     author='rv',
     author_email='yo-maruya@rescala.jp',
-    keywords='sample setuptools development',
+    keywords='python crawler scraping',
     install_requires=['requests','bs4', 'selenium' , 'lxml', 'mecab-python3', 'asgiref'],
     url='https://rescala.jp',
     license='MIT',

@@ -5,8 +5,8 @@ def get_current_time():
     now = datetime.now().strftime("%Y%m%d%H%M%S")
     return now
 
-def get_today_date():
-    now = datetime.now().strftime("%Y%m%d")
+def get_today_date(split=""):
+    now = datetime.now().strftime(f"%Y{split}%m{split}%d")
     return now
 
 def parse_http_date(s):

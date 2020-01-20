@@ -19,6 +19,24 @@ class CatsRequest:
         """
         self.session = requests.Session()
 
+    def __enter__(self):
+        """[summary]
+        
+        Returns:
+            [type] -- [description]
+        """
+        return self
+
+    def __exit__(self, ex_type, ex_value, trace):
+        """[summary]
+        
+        Arguments:
+            ex_type {[type]} -- [description]
+            ex_value {[type]} -- [description]
+            trace {[type]} -- [description]
+        """
+        self.close()
+
     def close(self):
         """[summary]
         """

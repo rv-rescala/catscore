@@ -96,28 +96,28 @@ class CatsLogging:
                     cls.error("Cannot login to google")
 
     @classmethod
-    def __add_message_option(cls, mesasge):
+    def __add_message_option(cls, mesasge, func_name:str=None):
         host_name = socket.gethostname()
         ip_addr  =socket.gethostbyname(socket.gethostname())
-        return f"{host_name},{ip_addr},{mesasge}"
+        return f"{host_name},{ip_addr},{func_name},{mesasge}"
 
     @classmethod
-    def debug(cls, message):
+    def debug(cls, message, func_name:str=None):
         #logger = logging.getLogger('root')
         #print(message)
-        logging.debug(cls.__add_message_option(message))
+        logging.debug(cls.__add_message_option(message,func_name))
 
     @classmethod
-    def info(cls, message):
+    def info(cls, message, func_name:str=None):
         #logger = logging.getLogger('root')
-        logging.info(cls.__add_message_option(message))
+        logging.info(cls.__add_message_option(message,func_name))
 
     @classmethod
-    def error(cls, message):
+    def error(cls, message, func_name:str=None):
         logger = logging.getLogger('root')
-        logger.error(cls.__add_message_option(message))
+        logger.error(cls.__add_message_option(message,func_name))
 
     @classmethod
-    def critical(cls, message):
+    def critical(cls, message, func_name:str=None):
         logger = logging.getLogger('root')
-        logger.critical(cls.__add_message_option(message))
+        logger.critical(cls.__add_message_option(message,func_name))

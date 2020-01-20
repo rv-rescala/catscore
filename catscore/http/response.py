@@ -3,7 +3,6 @@ from typing import List, Mapping
 from bs4 import BeautifulSoup
 import json
 
-
 @dataclass
 class Response:
     """[summary]
