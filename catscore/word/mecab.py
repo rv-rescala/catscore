@@ -1,11 +1,12 @@
 import MeCab
 from dataclasses import dataclass
-from typing import List
-from concurrent import futures
-import time
+from typing import Any, Iterable, List, Tuple, Callable
+from asgiref.sync import sync_to_async
+import asyncio
 
 @dataclass(frozen=True)
 class MecabResult:
+    sencence: str
     word: str
     word_type: str
     word_kana: str
@@ -25,7 +26,7 @@ class CatsMeCab:
         else:
             self.mecab = MeCab.Tagger(f'-d {dict_path}')
 
-    def parse(self, sentence: str):
+    def parse(self, sentence: str) -> MecabResult:
         """[summary]
         
         Arguments:
@@ -40,16 +41,20 @@ class CatsMeCab:
             word = _w1[0]
             word_type = _w2[0]
             word_kana = _w2[-1]
-            return MecabResult(word=word,
+            return MecabResult(sencence=sentence,
+                               word=word,
                                word_type=word_type,
                                word_kana=word_kana)
 
         return list(map(lambda r: _to_result(r), self.mecab.parse(sentence).splitlines()[:-1]))
 
-    def async_par_parse(self, sentences: List[str]):
+    async def async_parse(self, sentences: List[str]) -> List[MecabResult]:
         """[TBD]
         
         Arguments:
             sentences {List[str]} -- [description]
         """
-        pass
+        async def _aync_parse(sentence: str):
+            result = await sync_to_async(self.parse)(sentence)
+            return result
+        return await asyncio.gather(*[_aync_parse(sentence) for sentence in sentences])
