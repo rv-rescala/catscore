@@ -1,4 +1,5 @@
 import time
+from itertools import chain
 
 def calc_time(message=''):
     def _calc_time(func):
@@ -12,3 +13,6 @@ def calc_time(message=''):
             return ret
         return wrapper
     return _calc_time
+
+def flatten(l):
+    return list(chain.from_iterable(l))

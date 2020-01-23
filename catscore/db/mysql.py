@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 import json
+from pyspark import SparkContext, SQLContext
+from pyspark.sql import SparkSession, DataFrame
 
 @dataclass(frozen=True)
 class MySQLConf:
@@ -28,3 +30,14 @@ class MySQLConf:
                 pwd=j["pwd"],
                 db_name=j["db_name"])
         return m
+    
+class MySQLSpark:
+    @classmethod
+    def read(cls, spark:SparkSession, mysql_conf:MySQLConf, table_name:str) -> DataFrame:
+        sql_context = SQLContext(spark.sparkContext)
+        return sql_context.read.format("jdbc").options(url=mysql_conf.connection_uri("jdbc"), dbtable=table_name).load()
+    
+    @classmethod
+    def overwrite(cls, spark:SparkSession, table_name: str, df:DataFrame, mysql_conf:MySQLConf):
+        df.write.jdbc(mysql_conf.connection_uri("jdbc"), table=table_name, mode='overwrite')
+    
