@@ -16,3 +16,6 @@ def calc_time(message=''):
 
 def flatten(l):
     return list(chain.from_iterable(l))
+
+def filter_none(l):
+    return list(filter(lambda x: x != None, l))
