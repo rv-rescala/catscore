@@ -108,13 +108,13 @@ class CatsLogging:
                     logger = logging.getLogger('root')
                     logger.addHandler(handler)
                 except smtplib.SMTPAuthenticationError:
-                    cls.error("Cannot login to google")
+                    print("Cannot login to google")
         if slack:
             cls.slack_notice = slackweb.Slack(url=slack.notice)
             cls.slack_error = slackweb.Slack(url=slack.error)
             
     @classmethod
-    def init_by_json(cls, json_path):
+    def init_from_json(cls, json_path):
         with open(json_path, "r") as f:
             j = json.load(f)
             print(j)
@@ -162,7 +162,7 @@ class CatsLogging:
     @classmethod
     def warn(cls, message, func_name:str=None):
         #logger = logging.getLogger('root')
-        logger.warn(cls.__add_message_option(message,func_name))
+        logging.warn(cls.__add_message_option(message,func_name))
         
     @classmethod
     def error(cls, message, func_name:str=None):
@@ -171,7 +171,7 @@ class CatsLogging:
         try:
             cls.slack_error.notify(text=cls.app_name + ",error," + cls.__add_message_option(message,func_name))
         except Exception:
-            print(f"cls.slack_error has Exception: {sys.exc_info()}")
+            print(f"error: cls.slack_error has Exception: {sys.exc_info()}")
 
     @classmethod
     def critical(cls, message, func_name:str=None):
@@ -181,4 +181,4 @@ class CatsLogging:
             try:
                 cls.slack_error.notify(text=cls.app_name + ",critical," + cls.__add_message_option(message,func_name))
             except Exception:
-                print(f"cls.slack_error has Exception: {sys.exc_info()}")
+                print(f"critical: cls.slack_error has Exception: {sys.exc_info()}")

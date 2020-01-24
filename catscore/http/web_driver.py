@@ -43,6 +43,27 @@ class CatsWebDriver:
         self.driver = webdriver.Chrome(options=options, executable_path=executable_path,desired_capabilities=caps)
         self.driver.implicitly_wait(5)
 
+    @classmethod
+    def instance(self, json_path:str):
+        with open(json_path, "r") as f:
+            j = json.load(f)
+            binary_location = j["web_driver"]["binary_location"]
+            executable_path = j["web_driver"]["executable_path"]
+            proxy = None
+            try:
+                proxy = j["web_driver"]["proxy"]
+            except Exception:
+                print("proxy is None")
+            headless = False
+            if j["web_driver"]["mode"] == "headless":
+                headless = True
+            d = CatsWebDriver(
+                binary_location=binary_location,
+                executable_path=executable_path,
+                proxy=proxy,
+                headless=headless)
+        return d
+
     def close(self):
         """[Close WebDriverSession, if chromewebdriver dosen't kill, plsease execute "killall chromedriver"]
         

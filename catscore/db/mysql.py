@@ -24,11 +24,11 @@ class MySQLConf:
         with open(path, "r") as f:
             j = json.load(f)
             m = MySQLConf(
-                host=j["host"],
-                port=j["port"],
-                user=j["user"],
-                pwd=j["pwd"],
-                db_name=j["db_name"])
+                host=j["mysql"]["host"],
+                port=j["mysql"]["port"],
+                user=j["mysql"]["user"],
+                pwd=j["mysql"]["pwd"],
+                db_name=j["mysql"]["db_name"])
         return m
     
 class MySQLSpark:
