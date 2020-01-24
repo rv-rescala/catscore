@@ -1,4 +1,4 @@
-import logging
+from catscore.lib.logger import CatsLogging as logging
 import requests
 from requests import Session
 import json
@@ -40,7 +40,6 @@ class CatsRequest:
         """
         self.close()
         
-
     def close(self):
         """[summary]
         """
@@ -109,7 +108,12 @@ class CatsRequest:
         self._check_status_code(url, ret.status_code)
         return self._mk_result(ret, response_content_type)
     
-    async def async_get(self, url, response_content_type=None):
-        """[TBD]
-        """
-        pass
+    def download(self, url:str, fullpath:str, request_type:str = "get", post_data=None, proxy=None):
+        if request_type == "post":
+            bi = self.post(url=url, post_data=post_data, proxy=proxy)
+        else:
+            bi = self.get(url=url, proxy=proxy).content
+        with open(fullpath, "wb") as f:
+            f.write(bi)
+        
+        
