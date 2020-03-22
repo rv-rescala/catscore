@@ -37,14 +37,14 @@ class CatsWebDriver:
         if proxy:
             logging.info("WebDriverSession proxy on")
             options.add_argument(f"proxy-server={proxy}")
-            
+
         caps = DesiredCapabilities.CHROME
         caps['loggingPrefs'] = {'performance': 'INFO'}
         self.driver = webdriver.Chrome(options=options, executable_path=executable_path,desired_capabilities=caps)
         self.driver.implicitly_wait(5)
 
     @classmethod
-    def instance(self, json_path:str):
+    def create_instance_from_json(cls, json_path:str):
         with open(json_path, "r") as f:
             j = json.load(f)
             binary_location = j["web_driver"]["binary_location"]
@@ -124,3 +124,31 @@ class CatsWebDriver:
         for entry in self.driver.get_log('performance'):
             result.append(entry['message'])
         return result
+
+    def get_google_ad_iframe_ids(self):
+        """[summary]
+        
+        Returns:
+            [type] -- [description]
+        """
+        iframes = self.driver.html.findAll(name="iframe")
+        print(f"iframe num is {len(iframes)}")
+        iframe_ids = list(map(lambda x: x.get("id"), iframes))
+        ad_iframe_ids = list(filter(lambda x: x != None and x.count("google_ads_iframe"), iframe_ids))
+        return ad_iframe_ids
+    
+    def get_iframe_contents(self):
+        """[summary]
+        
+        Returns:
+            [type] -- [description]
+        """
+        iframe_ids = self.get_ad_iframe_ids(html)
+        r = []
+        for iframe_id in iframe_ids:
+            iframe_elem = self.driver.find_element_by_id(iframe_id)
+            self.driver.switch_to.frame(iframe_elem)
+            ihtml = self.html
+            r.append((iframe_id, ihtml))
+            self.driver.switch_to.default_content()
+        return r
