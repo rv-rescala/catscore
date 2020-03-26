@@ -74,7 +74,7 @@ class MySQLAlchemySingleton:
         return super().__new__(cls)
 
     @classmethod
-    def initialize(cls, mysql_conf: MySQLConf):
+    def initialize(cls, mysql_conf: MySQLConf, echo=False):
         """
 
         :param config:
@@ -88,7 +88,7 @@ class MySQLAlchemySingleton:
         cls.engine = create_engine(
             db_setting,
             encoding="utf-8",
-            echo=False  # Trueだと実行のたびにSQLが出力される
+            echo=echo  # Trueだと実行のたびにSQLが出力される
         )
         # Sessionの作成
         cls.session = scoped_session(
