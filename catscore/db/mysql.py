@@ -163,8 +163,8 @@ class MySQLAlchemySingleton:
                     cls.session.add(item)
                     cls.session.commit()
                 except:
-                    logging.info(f"{sys.exc_info()}")
-                    logging.info(f"key is duplicate]: {item}")
+                    logging.debug(f"{sys.exc_info()}")
+                    logging.debug(f"key is duplicate]: {item}")
                     cls.session.rollback()
         else:
             try:
