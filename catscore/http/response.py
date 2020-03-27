@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from typing import List, Mapping
 from bs4 import BeautifulSoup
 import json
+from requests import Response as R
 
 @dataclass
 class Response:
@@ -9,6 +10,7 @@ class Response:
     """
     headers: Mapping[str, str]
     content: str
+    response: R
 
 @dataclass
 class ResponseHtml:
@@ -16,6 +18,7 @@ class ResponseHtml:
     """
     headers: Mapping[str, str]
     content: BeautifulSoup
+    response: R
 
 @dataclass
 class ResponseJson:
@@ -23,3 +26,4 @@ class ResponseJson:
     """
     headers: Mapping[str, str]
     content:  json
+    response: R

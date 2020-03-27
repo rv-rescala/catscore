@@ -16,14 +16,14 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     
 setup(
     name='catscore',
-    version='0.3.2',
+    version='0.3.4',
     description='Core library for cats project',
     long_description=long_description,
     long_description_content_type='text/markdown',
     author='rv',
     author_email='yo-maruya@rescala.jp',
     keywords='python crawler scraping',
-    install_requires=['requests','bs4', 'selenium' , 'lxml', 'asgiref', 'aiohttp', 'emoji', 'pillow', 'slackweb', 'sqlalchemy'],
+    install_requires=['requests','bs4', 'selenium' , 'lxml', 'asgiref', 'aiohttp', 'emoji', 'pillow', 'slackweb', 'sqlalchemy', 'pysocks'],
     url='https://rescala.jp',
     license='MIT',
     packages=find_packages(exclude=('tests')),
