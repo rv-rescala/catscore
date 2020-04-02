@@ -143,10 +143,11 @@ class CatsLogging:
 
     @classmethod
     def notify(cls, message, func_name:str=None):
-        try:
-            cls.slack_notice.notify(text=cls.app_name + ",notify," + cls.__add_message_option(message,func_name))
-        except Exception:
-            print(f"cls.slack_notice has Exception: {sys.exc_info()}")
+        if cls.slack_notice:
+            try:
+                cls.slack_notice.notify(text=cls.app_name + ",notify," + cls.__add_message_option(message,func_name))
+            except Exception:
+                print(f"cls.slack_notice has Exception: {sys.exc_info()}")
               
     @classmethod
     def debug(cls, message, func_name:str=None):
@@ -168,10 +169,11 @@ class CatsLogging:
     def error(cls, message, func_name:str=None):
         logger = logging.getLogger('root')
         logger.error(cls.__add_message_option(message,func_name))
-        try:
-            cls.slack_error.notify(text=cls.app_name + ",error," + cls.__add_message_option(message,func_name))
-        except Exception:
-            print(f"error: cls.slack_error has Exception: {sys.exc_info()}")
+        if cls.slack_error:
+            try:
+                cls.slack_error.notify(text=cls.app_name + ",error," + cls.__add_message_option(message,func_name))
+            except Exception:
+                print(f"error: cls.slack_error has Exception: {sys.exc_info()}")
 
     @classmethod
     def critical(cls, message, func_name:str=None):

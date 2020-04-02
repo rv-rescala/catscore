@@ -17,6 +17,8 @@ import asyncio
 import aiohttp
 
 class CatsRequest:
+    DEFAULT_TOR_ROXY = {'http':'socks5://127.0.0.1:9050','https':'socks5://127.0.0.1:9050'}
+    
     def __init__(self, proxy=None, verify=True):
         """[summary]
         """

@@ -24,10 +24,10 @@ def daily_worker_out(output_folder_path: str, s: str, function_name: str, extens
         f.write(s)
         
     # zip daily_folder check&create
-    if do_zip:
-        files = sorted(os.listdir(function_folder_path))
-        latest_timestamp = files[-1]
-        #zip_files = sorted(filter(lambda f: "zip" in f, os.listdir(function_folder_path)))
-        if get_today_date() > latest_timestamp:
-            logging.info("daily_worker_out: zipping")
-            shutil.make_archive(daily_folder_path, 'zip', root_dir=daily_folder_path)
+    #if do_zip:
+    #    files = sorted(os.listdir(function_folder_path))
+    #    latest_timestamp = files[-1]
+    #    #zip_files = sorted(filter(lambda f: "zip" in f, os.listdir(function_folder_path)))
+    #    if get_today_date() > latest_timestamp:
+    #        logging.info("daily_worker_out: zipping")
+    #        shutil.make_archive(daily_folder_path, 'zip', root_dir=daily_folder_path)
