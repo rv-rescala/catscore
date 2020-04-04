@@ -26,7 +26,10 @@ class CatsRequest:
         self.session = requests.Session()
         self.proxy = proxy
         self.verify = verify
-        
+        if timeout:
+            self.timeout = timeout
+        else:
+            self.timeout = self.DEFAULT_TIMEOUT
 
     @classmethod
     def create_instance_from_json(cls, json_path:str):
@@ -113,17 +116,17 @@ class CatsRequest:
             [type] -- [description]
         """
         if self.proxy:
-            ret = self.session.get(url, proxies= self.proxy, verify=self.verify)
+            ret = self.session.get(url, proxies= self.proxy, verify=self.verify, timeout=self.timeout)
         else:
-            ret = self.session.get(url)
+            ret = self.session.get(url, timeout=self.timeout)
         self._check_status_code(url, ret.status_code)
         return self._mk_result(ret, response_content_type)
 
     def post(self, url, post_data, response_content_type):
         if self.proxy:
-            ret = self.session.post(url, post_data, proxies=self.proxy, verify=self.verify)
+            ret = self.session.post(url, post_data, proxies=self.proxy, verify=self.verify, timeout=self.timeout)
         else:
-            ret = self.session.post(url, post_data)
+            ret = self.session.post(url, post_data, timeout=self.timeout)
         self._check_status_code(url, ret.status_code)
         return self._mk_result(ret, response_content_type)
 
