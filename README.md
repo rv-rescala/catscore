@@ -24,7 +24,7 @@ Please make sure to update tests as appropriate.
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
 
-## Mecab install
+## Mecab installation
 If you are failing to install mecab-python3, please check it
 
 en:  https://github.com/shogun-toolbox/shogun/issues/2930

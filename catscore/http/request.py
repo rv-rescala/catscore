@@ -17,9 +17,10 @@ import asyncio
 import aiohttp
 
 class CatsRequest:
-    DEFAULT_TOR_ROXY = {'http':'socks5://127.0.0.1:9050','https':'socks5://127.0.0.1:9050'}
+    DEFAULT_TOR_PROXY = {'http':'socks5://127.0.0.1:9050','https':'socks5://127.0.0.1:9050'}
+    DEFAULT_TIMEOUT = (10.0, 20.0)
     
-    def __init__(self, proxy=None, verify=True):
+    def __init__(self, proxy=None, verify=True, timeout=None):
         """[summary]
         """
         self.session = requests.Session()
