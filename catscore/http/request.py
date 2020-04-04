@@ -26,6 +26,7 @@ class CatsRequest:
         self.session = requests.Session()
         self.proxy = proxy
         self.verify = verify
+        
 
     @classmethod
     def create_instance_from_json(cls, json_path:str):
