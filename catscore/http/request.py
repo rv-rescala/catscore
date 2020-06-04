@@ -15,6 +15,7 @@ import time
 from asgiref.sync import sync_to_async
 import asyncio
 import aiohttp
+import sys
 
 class CatsRequest:
     DEFAULT_TOR_PROXY = {'http':'socks5://127.0.0.1:9050','https':'socks5://127.0.0.1:9050'}
@@ -23,14 +24,15 @@ class CatsRequest:
     def __init__(self, proxy=None, verify=True, timeout=None):
         """[summary]
         """
-        self.session = requests.Session()
-        self.proxy = proxy
-        self.verify = verify
         if timeout:
             self.timeout = timeout
         else:
             self.timeout = self.DEFAULT_TIMEOUT
-
+        self.session = requests.Session()
+        self.session.proxies.update(proxy)
+        self.session.verify=verify
+        self.print_global_info()
+        
     @classmethod
     def create_instance_from_json(cls, json_path:str):
         with open(json_path, "r") as f:
@@ -115,18 +117,12 @@ class CatsRequest:
         Returns:
             [type] -- [description]
         """
-        if self.proxy:
-            ret = self.session.get(url, proxies= self.proxy, verify=self.verify, timeout=self.timeout)
-        else:
-            ret = self.session.get(url, timeout=self.timeout)
+        ret = self.session.get(url, timeout=self.timeout)
         self._check_status_code(url, ret.status_code)
         return self._mk_result(ret, response_content_type)
 
     def post(self, url, post_data, response_content_type):
-        if self.proxy:
-            ret = self.session.post(url, post_data, proxies=self.proxy, verify=self.verify, timeout=self.timeout)
-        else:
-            ret = self.session.post(url, post_data, timeout=self.timeout)
+        ret = self.session.post(url, post_data, timeout=self.timeout)
         self._check_status_code(url, ret.status_code)
         return self._mk_result(ret, response_content_type)
 
@@ -134,10 +130,18 @@ class CatsRequest:
         if request_type == "post":
             bi = self.post(url=url, post_data=post_data)
         else:
-            bi = self.get(url=url, proxy=proxy).content
+            bi = self.get(url=url).content
         with open(fullpath, "wb") as f:
             f.write(bi)
 
     def get_global_info(self):
         url = "https://ipinfo.io"
-        return self.get(url=url, response_content_type="json").content
+        result = None
+        try:
+            result = self.get(url=url, response_content_type="json").content
+        except Exception:
+            logging.warn(f"get_global_info response is null: {sys.exc_info()}")
+        return result
+    
+    def print_global_info(self):
+        logging.info(f"global network info is {self.get_global_info()}")
